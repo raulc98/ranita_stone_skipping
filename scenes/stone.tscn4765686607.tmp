@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://v62wbukrq7y4"]
+
+[ext_resource type="Script" uid="uid://bda6ute81ff5l" path="res://scripts/Stone.gd" id="1_hmdus"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bmt60"]
+albedo_color = Color(0.521569, 0.533333, 0.505882, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hmdus"]
+material = SubResource("StandardMaterial3D_bmt60")
+radial_segments = 8
+rings = 3
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_bmt60"]
+height = 0.345123
+radius = 0.821289
+
+[node name="Stone" type="RigidBody3D" groups=["stones"]]
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, 0, 0, 0)
+script = ExtResource("1_hmdus")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.81948, 0, 0, 0, 0.187306, 0, 0, 0, 1.71631, 0, 0, 0)
+mesh = SubResource("CylinderMesh_hmdus")
+
+[node name="DownRay" type="RayCast3D" parent="MeshInstance3D" groups=["stone_ray_cast"]]
+transform = Transform3D(0.505184, 0, 0, 0, -6.13483e-08, -12.687, 0, 0.153166, -6.05217e-08, 0, 0, 0)
+target_position = Vector3(0, 0, 1)
+collision_mask = 4
+collide_with_areas = true
+debug_shape_custom_color = Color(1, 0.827451, 0.819608, 1)
+debug_shape_thickness = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.1127, 0, 0, 0, 1.1127, 0, 0, 0, 1.1127, 0, 0.000778073, 0)
+shape = SubResource("CylinderShape3D_bmt60")

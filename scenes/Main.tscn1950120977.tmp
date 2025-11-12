@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://b1xk4qw8lpxyp"]
+
+[ext_resource type="PackedScene" uid="uid://bx45jr67t5wq1" path="res://scenes/Player.tscn" id="1_elqb8"]
+[ext_resource type="Script" uid="uid://impy4g2i6kci" path="res://scripts/Camera3D.gd" id="2_rarhs"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/stone.tscn" id="2_rvslj"]
+[ext_resource type="PackedScene" uid="uid://dukn0gs3ovvh6" path="res://scenes/Water.tscn" id="3_0bbpv"]
+
+[sub_resource type="Environment" id="Environment_elqb8"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Stone" parent="." instance=ExtResource("2_rvslj")]
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, 5.02929, 2.44997, -59.5922)
+power_launch = null
+relative_up = null
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.962918, 0.269794, 0, -0.269794, 0.962918, 1.10653, 7.83902, -50.357)
+fov = 59.316
+script = ExtResource("2_rarhs")
+piedra_path = NodePath("../Stone")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_elqb8")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.104928, 0.99448, 0, -0.99448, -0.104928, 0, 25.6261, -0.078064)
+
+[node name="MARCAS DE POSICION" parent="." instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54249, 2.20239, -25.7027)
+
+[node name="Node3D2" parent="MARCAS DE POSICION/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="MARCAS DE POSICION/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="MARCAS DE POSICION/Node3D3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Water" parent="." instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -196.372)

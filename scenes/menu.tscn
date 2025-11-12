@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://wr8hu3wjtp85"]
+
+[sub_resource type="GDScript" id="GDScript_vsb4k"]
+script/source = "extends Control
+
+@export var game_scene: PackedScene
+
+func _ready() -> void:
+	set_process_unhandled_input(true)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if (event is InputEventKey and event.pressed and event.keycode == Key.SPACE) \\
+	   or (event is InputEventScreenTouch and event.pressed):
+		start_game()
+
+func start_game() -> void:
+	if game_scene:
+		get_tree().change_scene_to(game_scene)
+	else:
+		push_error(\"game_scene en Menu.gd no está configurada.\")
+"
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_vsb4k")
+
+[node name="background" type="ColorRect" parent="."]
+layout_mode = 0
+color = Color(1, 0.370682, 0.314081, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="CenterContainer"]
+layout_mode = 2
+text = "PRESS TO PLAY"
+horizontal_alignment = 1
