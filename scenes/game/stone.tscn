@@ -36,10 +36,10 @@ shape = SubResource("CylinderShape3D_bmt60")
 debug_color = Color(0.97851, 0, 0.3956, 0.42)
 
 [node name="down_ray" type="RayCast3D" parent="." groups=["stone_ray_cast"]]
-transform = Transform3D(0.6, 0, 0, 0, -7.60578e-09, -1.554, 0, 0.174, -6.79275e-08, 0, -0.134597, 0)
+transform = Transform3D(0.3, 0, 0, 0, -7.60578e-09, -1, 0, 0.174, -4.37114e-08, 0, -0.134597, 0)
 target_position = Vector3(0, 0, 1)
 collide_with_areas = true
-debug_shape_custom_color = Color(1, 0.827451, 0.819608, 1)
+debug_shape_custom_color = Color(0.966612, 0.621442, 0.801451, 1)
 debug_shape_thickness = 5
 
 [node name="aim_ray" type="RayCast3D" parent="." groups=["stone_ray_cast"]]

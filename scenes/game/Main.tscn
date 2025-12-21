@@ -1,0 +1,202 @@
+[gd_scene load_steps=8 format=3 uid="uid://bbgnf3sru2v4m"]
+
+[ext_resource type="PackedScene" uid="uid://bx45jr67t5wq1" path="res://scenes/game/Player.tscn" id="1_elqb8"]
+[ext_resource type="Script" uid="uid://impy4g2i6kci" path="res://scripts/Camera3D.gd" id="2_rarhs"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/game/stone.tscn" id="2_rvslj"]
+[ext_resource type="PackedScene" uid="uid://dukn0gs3ovvh6" path="res://scenes/game/Water.tscn" id="3_0bbpv"]
+[ext_resource type="Script" uid="uid://da6ui83vjej7b" path="res://scenes/game/GameController.gd" id="5_rfa2u"]
+[ext_resource type="Script" uid="uid://brrohjg8mj15t" path="res://scenes/game/PlayButton.gd" id="5_y8jsn"]
+
+[sub_resource type="Environment" id="Environment_elqb8"]
+
+[node name="Main" type="Node3D"]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Stone" parent="World" instance=ExtResource("2_rvslj")]
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, 4.10385, 1.69585, -60.3059)
+
+[node name="Camera3D" type="Camera3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 0.962918, 0.269794, 0, -0.269794, 0.962918, 1.10653, 7.83902, -50.357)
+fov = 59.316
+script = ExtResource("2_rarhs")
+piedra_path = NodePath("../Stone")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_elqb8")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(-0.27031, -0.958716, -0.0882917, -0.895357, 0.216609, 0.389124, -0.353935, 0.184236, -0.916944, 0, 25.6261, -62.9087)
+light_color = Color(1, 0.67451, 0.333333, 1)
+light_energy = 0.304
+light_indirect_energy = 2.0
+light_angular_distance = 12.13
+light_specular = 8.491
+light_bake_mode = 0
+shadow_enabled = true
+shadow_opacity = 0.2
+directional_shadow_max_distance = 246.2
+
+[node name="MARCAS DE POSICION" parent="World" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54249, 2.20239, -25.7027)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/Node3D3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="MARCAS DE POSICION2" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -318.382)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION2" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION2" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54249, 2.20239, -25.7027)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION2/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION2/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION2/Node3D3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="MARCAS DE POSICION3" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -786.973)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54249, 2.20239, -25.7027)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION3/Node3D3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="MARCAS DE POSICION4" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1076.23)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION4" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION4" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.54249, 2.20239, -25.7027)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION4/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Node3D3" parent="World/MARCAS DE POSICION/MARCAS DE POSICION4/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+
+[node name="Node3D2" parent="World/MARCAS DE POSICION/MARCAS DE POSICION4/Node3D3/Node3D3" instance=ExtResource("1_elqb8")]
+transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
+
+[node name="Water" parent="World" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.106689, -0.222198, -195.973)
+
+[node name="Water2" parent="World/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -297.442)
+visible = false
+
+[node name="Water3" parent="World/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -597.415)
+
+[node name="Water4" parent="World/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -896.625)
+
+[node name="Water" parent="World/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.106689, -0.222198, -1194.27)
+
+[node name="Water2" parent="World/Water/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -291.548)
+
+[node name="Water3" parent="World/Water/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -589.929)
+
+[node name="Water4" parent="World/Water/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -873.037)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Overlay" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.0784314, 0.94902, 0.192157)
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="UI/Overlay/CenterContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.658824, 1)
+theme_override_font_sizes/font_size = 130
+text = "▶"
+icon_alignment = 1
+script = ExtResource("5_y8jsn")
+
+[node name="GameOverLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -85.0
+offset_top = 361.0
+offset_right = 87.0
+offset_bottom = 448.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.5
+offset_top = 120.0
+offset_right = 51.5
+offset_bottom = 207.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameController" type="Node" parent="." groups=["game_controller"]]
+script = ExtResource("5_rfa2u")

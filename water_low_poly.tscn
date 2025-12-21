@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://dexg2rx8vpk4n"]
+
+[ext_resource type="Shader" uid="uid://cm0ffkqpc4xi5" path="res://water.tres" id="1_u6yqd"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/game/stone.tscn" id="2_uya2q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uya2q"]
+render_priority = 0
+shader = ExtResource("1_u6yqd")
+shader_parameter/ColorParameter = Color(0, 0.333333, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ifikl"]
+material = SubResource("ShaderMaterial_uya2q")
+size = Vector2(10, 10)
+subdivide_width = 20
+subdivide_depth = 20
+
+[node name="Water" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0146208, 0.196489, -0.114329)
+mesh = SubResource("PlaneMesh_ifikl")
+
+[node name="Stone" parent="." instance=ExtResource("2_uya2q")]
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, -0.549271, 0.647744, -0.380071)

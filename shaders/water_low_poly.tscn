@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://dq2bpi0u8vb5e"]
+
+[ext_resource type="Shader" uid="uid://cm0ffkqpc4xi5" path="res://water.tres" id="1_2o6db"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/game/stone.tscn" id="2_1xdgn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1xdgn"]
+render_priority = 0
+shader = ExtResource("1_2o6db")
+shader_parameter/ColorParameter2 = Color(0.107795, 0.344802, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ywua8"]
+material = SubResource("ShaderMaterial_1xdgn")
+uv2_padding = 1.0
+size = Vector2(100, 100)
+subdivide_width = 300
+subdivide_depth = 300
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_l7c14"]
+top_radius = 6.354
+bottom_radius = 7.329
+
+[node name="WaterLowPoly" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.544678, 0.649315, 0.479506)
+mesh = SubResource("PlaneMesh_ywua8")
+
+[node name="Stone" parent="." instance=ExtResource("2_1xdgn")]
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, -3.60662, 1.01296, 15.2319)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.53583, 0.944702, -11.1798)
+mesh = SubResource("CylinderMesh_l7c14")

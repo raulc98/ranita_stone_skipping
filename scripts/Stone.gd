@@ -1,16 +1,23 @@
 extends RigidBody3D
 
-@export var power_launch: float = 20.0
-@export var relative_up: float = 0.3         # fracción de la potencia hacia arriba para generar arco
+signal game_over
+signal bounces_updated
+
+@export var power_launch: float = 60.0
+@export var relative_up: float = 0.1         # fracción de la potencia hacia arriba para generar arco
 @onready var down_ray: RayCast3D = $down_ray
 @onready var stone_area: Area3D = $stone_area
 
-
 @onready var aim_ray: RayCast3D = $aim_ray   # asegúrate de tener este nodo en la escena
+
+#Longitud
+@export var aim_min_z: float = 1
+@export var aim_max_z: float = 2
+
+#Altura
 @export var aim_min_y: float = -1.3
 @export var aim_max_y: float = 1.3
-@export var aim_min_z: float = 0.2
-@export var aim_max_z: float = 2
+
 @export var aim_speed: float = 4
 
 var _aim_phase: float = 0.0 #TODO: esto no se que hace... consultar...
@@ -18,18 +25,18 @@ var aim_active: bool = true #Controla si la aguja oscila
 
 # Parámetros ajustables
 var can_bounce: bool = false  # Controla si la piedra puede rebotar
-var bounce_restitution: float = 0.6   # 1.0 = sin pérdida, 0.5 = pierde la mitad de la energía
+var bounce_restitution: float = 1   # 1.0 = sin pérdida, 0.5 = pierde la mitad de la energía
 var bounce_up_boost: float = 4.0      # empuje extra vertical tras el rebote
 var min_bounce_speed: float = 6     # Limite de velocidad a la que la piedra rebota
-var bounces_counter : int = 0
 
 # Configurable
-var	is_power_selected: bool = false
+var is_power_selected: bool = false
 var is_first_launched: bool = true # Controla si la piedra esta lanzada por primera vez
-var is_game_over: bool = false
 
 var initial_transform: Transform3D
 var initial_aim_target: Vector3
+
+var last_time_scale: float = 1.1
 
 func _ready() -> void:
 	initial_transform = global_transform
@@ -38,10 +45,30 @@ func _ready() -> void:
 	add_to_group("stones")
 	freeze = true
 	down_ray.enabled = true
+	aim_ray.enabled = false
 	stone_area.area_entered.connect(_on_area_entered)
-	
+	#connect_to_game_controller()
 
-func first_launch_controller(delta: float):
+# Controla cuando el raycast colisiona con el agua...
+func _physics_process(delta: float) -> void:
+	move_aim_raycast(delta)
+	#var old_time_scale = Engine.time_scale
+	if down_ray.is_colliding() and down_ray.get_collider().is_in_group("water") and not freeze and linear_velocity.y <= 0:
+		Engine.time_scale = last_time_scale - 0.3
+		can_bounce = true
+	else:
+		Engine.time_scale = last_time_scale
+		can_bounce = false
+
+# Controla cuando la piedra colisiona con el agua
+func _on_area_entered(area):
+	if area.is_in_group("water"):
+		#print("Colisionando contra el agüita...")
+		bounce_stone_with_water(Vector3.UP)
+	if area.is_in_group("water_bottom"):
+		game_over.emit()
+
+func move_aim_raycast(delta: float):
 	if is_first_launched and aim_active and aim_ray:
 		_aim_phase += aim_speed * delta
 		var tp : Vector3
@@ -59,46 +86,16 @@ func first_launch_controller(delta: float):
 		aim_ray.target_position = tp
 		aim_ray.force_raycast_update()
 
-# Controla cuando el raycast colisiona con el agua...
-func _physics_process(delta: float) -> void:
-	first_launch_controller(delta)
-	if down_ray.is_colliding() and down_ray.get_collider().is_in_group("water") and not freeze and linear_velocity.y <= 0:
-		slow_down_time()
-		can_bounce = true
-	else:
-		normal_speed_time()
-		can_bounce = false
-
-# Controla cuando la piedra colisiona con el agua
-func _on_area_entered(area):
-	if area.is_in_group("water"):
-		print("Colisionando contra el agüita...")
-		bounce_stone_with_water(Vector3.UP)
-	if area.is_in_group("water_bottom"):
-		print("Game Over... :(")
-		is_game_over = true
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
-		stone_launcher()
-
-var contactos: int = 0
 # Metodos para lanzar y hacer rebotar la piedra
-func stone_launcher() -> void:
-	if is_game_over:
-		reset_stone()		
-		return
+func stone_launcher_controller() -> void:
+	print("Is_first_launched: ", is_first_launched)
 	if is_first_launched:
 		if not is_power_selected:
 			is_power_selected = true
-			var velocity_multiplier = 0.5
-			print("Power launch: ", power_launch)
-			print("Aim ray tamaño: ", aim_ray.target_position)
-			if aim_ray.target_position.z > 1.4:
-				velocity_multiplier = 1	
-			power_launch = power_launch * aim_ray.target_position.z * velocity_multiplier
+			power_launch = power_launch * aim_ray.target_position.z
 			print("Final Power launch: ", power_launch)
 			return
+
 		freeze = false
 		is_first_launched = false
 		var dir: Vector3
@@ -106,10 +103,10 @@ func stone_launcher() -> void:
 			var global_target: Vector3 = aim_ray.to_global(aim_ray.target_position)
 			dir = (global_target - global_transform.origin).normalized()
 			# <-- AÑADIR: orientar la piedra para que su "frente" mire al objetivo
-			look_at(global_target, Vector3.UP)
-		else:
+			#look_at(global_target, Vector3.UP)
+		else: 
 			dir = -transform.basis.z.normalized()
-
+		print("Final Power launchHHHHHH: ", power_launch)
 		var impulso: Vector3 = dir * power_launch + Vector3.UP * (power_launch * relative_up)
 		apply_central_impulse(impulso)
 		aim_ray.enabled = false
@@ -117,41 +114,38 @@ func stone_launcher() -> void:
 		return
 	
 	if can_bounce && is_first_launched == false:
-		contactos += 1
-		print("toque: ", contactos)
 		var v: Vector3 = linear_velocity
-	# 2) Evitar rebotes insignificantes
 		print("Velocidad actual:" , v.length())
-		print("Min bounce speed:" , min_bounce_speed)
 		if v.length() > min_bounce_speed:
-			print("Velocidad correcta")
-			throw_stone()
-		else:
-			print("Velocidad demasiado baja...");
+			intentional_bounce_stone()
 		can_bounce = false
-		#if down_ray.target_position.z > 0.2 and down_ray.target_position.z < 0.8:
-			#down_ray.target_position.z += 0.2
-		if Engine.time_scale > 1:
-			Engine.time_scale -= 0.05
 		return
 	elif not can_bounce:
 		if down_ray.target_position.z > 0.2:
 			down_ray.target_position.z -= 0.2
-		if Engine.time_scale < 1.8:
-			speed_up_time()
 		return
 
+#Recomandable que sea cercano a 2....
+const FLATNESS_FACTOR: float = 1.9
 
-func throw_stone(contact_normal: Vector3 = Vector3.UP) -> void :
+func intentional_bounce_stone(contact_normal: Vector3 = Vector3.UP) -> void :
 	var v: Vector3 = linear_velocity * 1.2
 	var n: Vector3 = contact_normal.normalized()
-	var v_reflected: Vector3 = v - 2.0 * v.dot(n) * n
-	var new_velocity: Vector3 = v_reflected * (bounce_restitution + 0.4)
+	#var v_reflected: Vector3 = v - FLATNESS_FACTOR * v.dot(n) * n
+	var v_reflected: Vector3 = v - FLATNESS_FACTOR * v.dot(n) * n
+	#bounce_restitution += 0.5
+	
+	var new_velocity: Vector3 = v_reflected * (bounce_restitution)
 	if new_velocity.dot(n) < 0.1:
 		new_velocity += n * bounce_up_boost
+	print("new velocity: ", new_velocity)
 	linear_velocity = new_velocity
 	position += n * 0.05
-	bounces_counter += 1
+	#last_time_scale += 0.08
+	#Engine.time_scale = last_time_scale
+	#print("ENGINE: ", Engine.time_scale)
+	#print("Last time scale = ", last_time_scale)
+	bounces_updated.emit()
 	pass
   
 # Rebote al tocar el agua, ya no puedes pulsar...
@@ -162,38 +156,29 @@ func bounce_stone_with_water(contact_normal: Vector3 = Vector3.UP) -> void:
 	var v: Vector3 = linear_velocity
 	# 2) Evitar rebotes insignificantes
 	if v.length() < min_bounce_speed:
-		print("Velocidad demasiado baja para rebotar:", v.length())
-		print("rebotes FINALES: " , bounces_counter)
 		return
 	else:
-		bounces_counter += 1
+		bounces_updated.emit()
 	# 3) Normal (usa la que te pase el detector si la tienes)
 	var n: Vector3 = contact_normal.normalized()
 	# 4) Reflejar vector: v_ref = v - 2*(v·n)*n
 	var v_reflected: Vector3 = v - 2.0 * v.dot(n) * n
 	# 5) Aplicar restitución (pérdida de energía) y añadir boost vertical
 	var new_velocity: Vector3 = v_reflected * bounce_restitution
-	
 	# Aseguramos un empujito extra vertical para darle 'pop' sobre el agua
 	# Solo afecta si la componente vertical resultante es pequeña
 	if new_velocity.dot(n) < 0.1:
 		new_velocity += n * bounce_up_boost
 	# 6) Fijar la nueva velocidad directamente
+	bounce_restitution -= 0.20
 	linear_velocity = new_velocity
 	position += n * 0.05
 
-
-func slow_down_time() -> void:
-	Engine.time_scale = 0.3
-
-func normal_speed_time():
-	Engine.time_scale = 1.1
-	
-func speed_up_time():
-	Engine.time_scale += 0.1
-
+#Reinicia la piedra
 func reset_stone() -> void:
-	is_game_over = false
+	bounce_restitution = 1
+	Engine.time_scale = 1.1
+	last_time_scale = 1.1
 	power_launch = 20.0
 	is_power_selected = false
 	is_first_launched = true
@@ -207,13 +192,13 @@ func reset_stone() -> void:
 		aim_ray.show()
 	#down_ray.enabled = true
 	down_ray.target_position.z = 1
+
 	# restauramos la target_position guardada
 	call_deferred("_restore_aim_ray_state")
 	freeze = true
-	_aim_phase = 0.0
+	_aim_phase = 0.0 
 	aim_ray.enabled = true
 	aim_ray.show()
-	bounces_counter = 0
 
 func _apply_initial_transform() -> void:
 	global_transform = initial_transform
@@ -234,3 +219,8 @@ func _restore_aim_ray_state() -> void:
 	# opcional: asegurar visibilidad/enable
 	aim_ray.enabled = true
 	aim_ray.show()
+
+#func connect_to_game_controller():
+	#var game_controller = get_tree().get_first_node_in_group("game_controller")
+	#if game_controller:
+		#game_controller.game_started.connect(_on_game_started)

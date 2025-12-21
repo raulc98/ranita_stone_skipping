@@ -1,34 +1,41 @@
-[gd_scene load_steps=7 format=3 uid="uid://dukn0gs3ovvh6"]
+[gd_scene load_steps=8 format=3 uid="uid://dukn0gs3ovvh6"]
 
 [ext_resource type="Script" uid="uid://d1t2amlml1v2n" path="res://scripts/Water.gd" id="2_vwe2q"]
+[ext_resource type="Shader" uid="uid://bbo1abph4arco" path="res://shaders/WaterShader.tres" id="3_x10cd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3a6sd"]
 size = Vector3(300, 1, 300)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h7np4"]
-albedo_color = Color(0.196078, 0.0862745, 0, 1)
+albedo_color = Color(0.839216, 0.713726, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vwe2q"]
 material = SubResource("StandardMaterial3D_h7np4")
 size = Vector3(300, 1, 300)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3a6sd"]
-albedo_color = Color(0.054902, 0.270588, 0.8, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ys6d0"]
+render_priority = 0
+shader = ExtResource("3_x10cd")
+shader_parameter/ColorParameter = Color(0.00111317, 0.295178, 0.974631, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_3a6sd"]
-material = SubResource("StandardMaterial3D_3a6sd")
-size = Vector3(300, 1, 300)
+[sub_resource type="PlaneMesh" id="PlaneMesh_taux3"]
+lightmap_size_hint = Vector2i(1502, 1502)
+material = SubResource("ShaderMaterial_ys6d0")
+size = Vector2(300, 300)
+subdivide_width = 100
+subdivide_depth = 100
 
 [node name="Water" type="Node3D"]
 script = ExtResource("2_vwe2q")
 
 [node name="water_area" type="Area3D" parent="." groups=["water"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.774221, 0)
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="water_area" groups=["water"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.218826, -0.294159, -0.417419)
 shape = SubResource("BoxShape3D_3a6sd")
-debug_color = Color(1, 0.211765, 0.847059, 1)
+debug_color = Color(1, 0.334852, 0.594172, 1)
 
 [node name="water_bottom" type="StaticBody3D" parent="." groups=["water_bottom"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20.6156, 0)
@@ -43,19 +50,20 @@ collision_mask = 7
 [node name="CollisionShape3D" type="CollisionShape3D" parent="water_bottom/water_area" groups=["water_bottom"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.218826, -0.294159, -0.417419)
 shape = SubResource("BoxShape3D_3a6sd")
-debug_color = Color(1, 0.211765, 0.847059, 1)
+debug_color = Color(1, 0.334852, 0.594172, 1)
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="water_bottom" groups=["water_bottom"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.218826, 11.4398, -0.417419)
 visible = false
 shape = SubResource("BoxShape3D_3a6sd")
-debug_color = Color(1, 0.211765, 0.847059, 1)
+debug_color = Color(1, 0.334852, 0.594172, 1)
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="water_bottom" groups=["water_bottom"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.08993, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.8523, 0)
 layers = 7
 mesh = SubResource("BoxMesh_vwe2q")
 skeleton = NodePath("")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." groups=["water"]]
-mesh = SubResource("BoxMesh_3a6sd")
+[node name="agua_superficie" type="MeshInstance3D" parent="."]
+layers = 15
+mesh = SubResource("PlaneMesh_taux3")
