@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=48 format=3 uid="uid://bbo1abph4arco"]
+[gd_resource type="VisualShader" load_steps=48 format=3 uid="uid://ddmotq4u2s8oo"]
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_lqsql"]
 
@@ -80,19 +80,18 @@ texture = SubResource("NoiseTexture2D_k1ako")
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_vyjac"]
 input_name = "time"
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5uywx"]
-noise_type = 2
-frequency = 0.0086
-fractal_type = 0
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4kaa3"]
+noise_type = 0
+frequency = 0.1058
 cellular_distance_function = 1
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rwryd"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wvsg6"]
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_5uywx")
+noise = SubResource("FastNoiseLite_4kaa3")
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_mhlpe"]
-texture = SubResource("NoiseTexture2D_rwryd")
+texture = SubResource("NoiseTexture2D_wvsg6")
 
 [sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_uecvf"]
 default_input_values = [1, Vector2(0.005, 0.005), 2, Vector2(0, 0)]
@@ -110,19 +109,19 @@ default_input_values = [1, Vector2(-0.005, -0.005), 2, Vector2(0, 0)]
 output_port_for_preview = 0
 texture = SubResource("NoiseTexture2D_k1ako")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_k1ako"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ogyoc"]
 noise_type = 2
-frequency = 0.0102
+frequency = 0.2921
 fractal_type = 0
 cellular_distance_function = 1
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ulhn1"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ewagh"]
 seamless = true
 as_normal_map = true
-noise = SubResource("FastNoiseLite_k1ako")
+noise = SubResource("FastNoiseLite_ogyoc")
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_0hn8h"]
-texture = SubResource("NoiseTexture2D_ulhn1")
+texture = SubResource("NoiseTexture2D_ewagh")
 
 [sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_k1ako"]
 constant = 0.005
@@ -131,7 +130,7 @@ constant = 0.005
 operator = 2
 
 [sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_gbclv"]
-default_input_values = [1, Vector2(0.005, 0.005), 2, Vector2(0, 0)]
+default_input_values = [1, Vector2(0.001, 0.001), 2, Vector2(0, 0)]
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_smiwy"]
 input_name = "time"
@@ -140,7 +139,7 @@ input_name = "time"
 input_name = "time"
 
 [sub_resource type="VisualShaderNodeUVFunc" id="VisualShaderNodeUVFunc_giqrb"]
-default_input_values = [1, Vector2(-0.005, -0.005), 2, Vector2(0, 0)]
+default_input_values = [1, Vector2(-0.001, -0.001), 2, Vector2(0, 0)]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8bl68"]
 noise_type = 2
@@ -171,7 +170,7 @@ default_input_values = [1, Vector2(0.01, 0.01), 2, Vector2(0, 0)]
 input_name = "time"
 
 [sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_qxf5e"]
-default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(0.5, 0.5, 1)]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1)]
 operator = 2
 
 [resource]
@@ -205,7 +204,7 @@ void vertex() {
 
 
 // VectorOp:8
-	vec3 n_in8p1 = vec3(0.50000, 0.50000, 1.00000);
+	vec3 n_in8p1 = vec3(1.00000, 1.00000, 1.00000);
 	vec3 n_out8p0 = n_out4p0 * n_in8p1;
 
 
@@ -233,7 +232,7 @@ void fragment() {
 
 
 // UVFunc:5
-	vec2 n_in5p1 = vec2(0.00500, 0.00500);
+	vec2 n_in5p1 = vec2(0.00100, 0.00100);
 	vec2 n_out5p0 = vec2(n_out6p0) * n_in5p1 + UV;
 
 
@@ -246,7 +245,7 @@ void fragment() {
 
 
 // UVFunc:9
-	vec2 n_in9p1 = vec2(-0.00500, -0.00500);
+	vec2 n_in9p1 = vec2(-0.00100, -0.00100);
 	vec2 n_out9p0 = vec2(n_out8p0) * n_in9p1 + UV;
 
 
@@ -343,7 +342,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-623.103, -367.826)
+graph_offset = Vector2(-741.656, -283.223)
 nodes/vertex/2/node = SubResource("VisualShaderNodeTexture_6lio0")
 nodes/vertex/2/position = Vector2(-500, -340)
 nodes/vertex/3/node = SubResource("VisualShaderNodeInput_lnmuq")

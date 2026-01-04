@@ -1,12 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://v62wbukrq7y4"]
+[gd_scene load_steps=6 format=3 uid="uid://v62wbukrq7y4"]
 
 [ext_resource type="Script" uid="uid://bda6ute81ff5l" path="res://scripts/Stone.gd" id="1_hmdus"]
+[ext_resource type="Shader" uid="uid://2s7uur1y7188" path="res://scenes/game/stone.tres" id="2_h118k"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bmt60"]
-albedo_color = Color(0.521569, 0.533333, 0.505882, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h118k"]
+render_priority = 0
+shader = ExtResource("2_h118k")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_hmdus"]
-material = SubResource("StandardMaterial3D_bmt60")
+material = SubResource("ShaderMaterial_h118k")
 radial_segments = 8
 rings = 3
 
@@ -21,6 +23,7 @@ script = ExtResource("1_hmdus")
 
 [node name="mesh_instance_3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.81948, 0, 0, 0, 0.187306, 0, 0, 0, 1.71631, 0, 0, 0)
+instance_shader_parameters/ColorParameter = Color(0.287827, 0.357814, 0.382401, 1)
 mesh = SubResource("CylinderMesh_hmdus")
 
 [node name="collision_shape" type="CollisionShape3D" parent="."]

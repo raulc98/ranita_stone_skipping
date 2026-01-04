@@ -1,0 +1,54 @@
+[gd_resource type="VisualShader" load_steps=5 format=3 uid="uid://2s7uur1y7188"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4kaa3"]
+noise_type = 0
+frequency = 0.1058
+cellular_distance_function = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wvsg6"]
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_4kaa3")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_g7ijy"]
+texture = SubResource("NoiseTexture2D_wvsg6")
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_tww8b"]
+parameter_name = "ColorParameter"
+qualifier = 2
+default_value_enabled = true
+default_value = Color(0.287827, 0.357814, 0.382401, 1)
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+instance uniform vec4 ColorParameter : source_color = vec4(0.287827, 0.357814, 0.382401, 1.000000);
+uniform sampler2D tex_frg_2;
+
+
+
+void fragment() {
+// ColorParameter:9
+	vec4 n_out9p0 = ColorParameter;
+
+
+// Texture2D:2
+	vec4 n_out2p0 = texture(tex_frg_2, UV);
+
+
+// Output:0
+	ALBEDO = vec3(n_out9p0.xyz);
+	METALLIC = n_out2p0.x;
+	ROUGHNESS = n_out2p0.x;
+
+
+}
+"
+graph_offset = Vector2(-674.797, -304.965)
+nodes/fragment/0/position = Vector2(200, -40)
+nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_g7ijy")
+nodes/fragment/2/position = Vector2(-480, 100)
+nodes/fragment/9/node = SubResource("VisualShaderNodeColorParameter_tww8b")
+nodes/fragment/9/position = Vector2(-540, -240)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 3, 9, 0, 0, 0, 2, 0, 0, 2)

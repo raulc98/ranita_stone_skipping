@@ -14,7 +14,8 @@
 [node name="World" type="Node3D" parent="."]
 
 [node name="Stone" parent="World" instance=ExtResource("2_rvslj")]
-transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, 4.10385, 1.69585, -60.3059)
+transform = Transform3D(1.02339, 0, 0, 0, 1.02339, 0, 0, 0, 1.02339, 4.10385, 2.01592, -60.3059)
+metadata/_edit_group_ = true
 
 [node name="Camera3D" type="Camera3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 0.962918, 0.269794, 0, -0.269794, 0.962918, 1.10653, 7.83902, -50.357)
@@ -26,19 +27,16 @@ piedra_path = NodePath("../Stone")
 environment = SubResource("Environment_elqb8")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
-transform = Transform3D(-0.27031, -0.958716, -0.0882917, -0.895357, 0.216609, 0.389124, -0.353935, 0.184236, -0.916944, 0, 25.6261, -62.9087)
-light_color = Color(1, 0.67451, 0.333333, 1)
-light_energy = 0.304
-light_indirect_energy = 2.0
-light_angular_distance = 12.13
-light_specular = 8.491
-light_bake_mode = 0
+transform = Transform3D(0.199368, 0.967591, -0.154983, 0, 0.158158, 0.987413, 0.979926, -0.196859, 0.0315316, 0, 25.6261, -62.9087)
+light_angular_distance = 23.89
+light_specular = 2.164
+light_bake_mode = 1
 shadow_enabled = true
-shadow_opacity = 0.2
-directional_shadow_max_distance = 246.2
+shadow_opacity = 0.6
+directional_shadow_max_distance = 79.3
 
 [node name="MARCAS DE POSICION" parent="World" instance=ExtResource("1_elqb8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.20239, -73.3897)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.975278, -73.3897)
 
 [node name="Node3D2" parent="World/MARCAS DE POSICION" instance=ExtResource("1_elqb8")]
 transform = Transform3D(0.999849, 0.0174001, 0, -0.0174001, 0.999849, 0, 0, 0, 1, 0.282913, 0.628025, -15.1479)
@@ -134,6 +132,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -589.929)
 [node name="Water4" parent="World/Water/Water" instance=ExtResource("3_0bbpv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -873.037)
 
+[node name="Water5" parent="World/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.106689, -0.222198, -298.378)
+
+[node name="Water2" parent="World/Water/Water5" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -297.442)
+visible = false
+
+[node name="Water3" parent="World/Water/Water5" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -597.415)
+
+[node name="Water4" parent="World/Water/Water5" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -896.625)
+
+[node name="Water" parent="World/Water/Water5" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.106689, -0.222198, -1194.27)
+
+[node name="Water2" parent="World/Water/Water5/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -291.548)
+
+[node name="Water3" parent="World/Water/Water5/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -589.929)
+
+[node name="Water4" parent="World/Water/Water5/Water" instance=ExtResource("3_0bbpv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -873.037)
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Overlay" type="Control" parent="UI"]
@@ -192,6 +215,20 @@ offset_left = -51.5
 offset_top = 120.0
 offset_right = 51.5
 offset_bottom = 207.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MetersLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.5
+offset_top = 188.0
+offset_right = 51.5
+offset_bottom = 275.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 30

@@ -6,6 +6,7 @@ var stone: Node
 
 var overlay: Control
 var score_label: Label
+var meters_label: Label
 var game_over_label: Label
 
 var is_game_active: bool = false
@@ -17,6 +18,12 @@ func _ready():
 	stone.game_over.connect(end_game)
 	stone.bounces_updated.connect(count_bounces)
 
+#TODO: NUEVO...
+func _process(delta):
+	if stone:
+		var meters = int(stone.distance_travelled)
+		meters_label.text = str(meters) + " m"
+
 func init_ui():
 	overlay = get_node("../UI/Overlay")
 	stone = get_node("../World/Stone")
@@ -24,6 +31,8 @@ func init_ui():
 	score_label.text = ""
 	game_over_label = get_node("../UI/GameOverLabel")
 	game_over_label.hide()
+	meters_label = get_node("../UI/MetersLabel")
+	meters_label.text = ""
 	show_overlay()
 
 func count_bounces():

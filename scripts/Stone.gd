@@ -20,7 +20,7 @@ signal bounces_updated
 
 @export var aim_speed: float = 4
 
-var _aim_phase: float = 0.0 #TODO: esto no se que hace... consultar...
+var _aim_phase: float = 0.0 
 var aim_active: bool = true #Controla si la aguja oscila
 
 # Parámetros ajustables
@@ -38,6 +38,10 @@ var initial_aim_target: Vector3
 
 var last_time_scale: float = 1.1
 
+#	TODO: NUEVO, COMPROBAR...
+var distance_travelled: float = 0.0
+var _last_position: Vector3
+
 func _ready() -> void:
 	initial_transform = global_transform
 	if aim_ray:
@@ -45,12 +49,16 @@ func _ready() -> void:
 	add_to_group("stones")
 	freeze = true
 	down_ray.enabled = true
-	aim_ray.enabled = false
+	aim_ray.enabled = true
 	stone_area.area_entered.connect(_on_area_entered)
+	#	TODO: NUEVO, COMPROBAR...
+	distance_travelled = 0.0
+	_last_position = global_position
 	#connect_to_game_controller()
 
 # Controla cuando el raycast colisiona con el agua...
 func _physics_process(delta: float) -> void:
+	distance_travelled_counter()
 	move_aim_raycast(delta)
 	#var old_time_scale = Engine.time_scale
 	if down_ray.is_colliding() and down_ray.get_collider().is_in_group("water") and not freeze and linear_velocity.y <= 0:
@@ -141,10 +149,6 @@ func intentional_bounce_stone(contact_normal: Vector3 = Vector3.UP) -> void :
 	print("new velocity: ", new_velocity)
 	linear_velocity = new_velocity
 	position += n * 0.05
-	#last_time_scale += 0.08
-	#Engine.time_scale = last_time_scale
-	#print("ENGINE: ", Engine.time_scale)
-	#print("Last time scale = ", last_time_scale)
 	bounces_updated.emit()
 	pass
   
@@ -220,7 +224,11 @@ func _restore_aim_ray_state() -> void:
 	aim_ray.enabled = true
 	aim_ray.show()
 
-#func connect_to_game_controller():
-	#var game_controller = get_tree().get_first_node_in_group("game_controller")
-	#if game_controller:
-		#game_controller.game_started.connect(_on_game_started)
+func distance_travelled_counter() -> void:
+	var current_pos = global_position
+	var step_distance = current_pos.distance_to(_last_position)
+	if not is_first_launched:
+		distance_travelled += (step_distance / 10)
+	else:
+		distance_travelled = 0
+	_last_position = current_pos
