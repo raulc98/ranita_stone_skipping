@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cffu34636po7c"]
+
+[ext_resource type="ArrayMesh" uid="uid://bu7j0j15fwfxw" path="res://assets/canoe.obj" id="1_8dns0"]
+[ext_resource type="Script" uid="uid://p5qqtbws4f0w" path="res://scenes/canoe.gd" id="2_tf46s"]
+
+[node name="canoe_move" type="Node3D"]
+
+[node name="Canoe" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_8dns0")
+script = ExtResource("2_tf46s")

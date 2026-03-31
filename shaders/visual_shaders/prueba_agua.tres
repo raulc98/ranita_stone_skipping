@@ -1,0 +1,315 @@
+[gd_resource type="VisualShader" load_steps=26 format=3 uid="uid://d3c45xn5lbm4i"]
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_8y2lh"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_a7r7j"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_isihq"]
+input_name = "screen_uv"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_a3j6j"]
+source = 1
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_55bo3"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_8el17"]
+constant = 0.8
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_i3rvo"]
+parameter_name = "simulation"
+
+[sub_resource type="VisualShaderNodeLinearSceneDepth" id="VisualShaderNodeLinearSceneDepth_1iy6g"]
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_qqgs7"]
+size = Vector2(512.6, 290.56)
+expression = "float d = linear_depth;
+d = d + VERTEX.z;
+depth = exp(-d * murkiness);"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_rnr00"]
+parameter_name = "murkiness"
+default_value_enabled = true
+default_value = 0.3
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_3qti1"]
+function = 31
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_i4qkf"]
+parameter_name = "deep_water"
+default_value_enabled = true
+default_value = Color(0, 0, 1, 1)
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_mx35c"]
+parameter_name = "shallow_water"
+default_value_enabled = true
+default_value = Color(0, 1, 1, 1)
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_krrqf"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_w4dg5"]
+size = Vector2(501.944, 279.904)
+expression = "vec3 duv = vec3(4.0 / 514.0, 4.0 / 514.0, 0);
+float v1 = texture(sim, UV - duv.xz).y;
+float v2 = texture(sim, UV + duv.xz).y;
+float v3 = texture(sim, UV - duv.zy).y;
+float v4 = texture(sim, UV + duv.zy).y;
+
+normal = normalize(vec3(v1 - v2, v3 - v4, 0.3));"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_god7e"]
+parameter_name = "refraction_strength"
+default_value_enabled = true
+default_value = 0.1
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_isihq"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_a3j6j"]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_55bo3"]
+expanded_output_ports = [0]
+source = 5
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_8el17"]
+parameter_name = "simulation2"
+
+[sub_resource type="VisualShaderNodeFloatOp" id="VisualShaderNodeFloatOp_i3rvo"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_1iy6g"]
+parameter_name = "amplitude"
+default_value_enabled = true
+default_value = 0.5
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_qqgs7"]
+input_name = "normal"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_rnr00"]
+operator = 2
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_3qti1"]
+input_name = "vertex"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+uniform sampler2D simulation2;
+uniform float amplitude = 0.5;
+uniform float refraction_strength = 0.10000000149012;
+uniform sampler2D simulation;
+uniform sampler2D screen_tex_frg_13 : hint_screen_texture;
+uniform vec4 deep_water : source_color = vec4(0.000000, 0.000000, 1.000000, 1.000000);
+uniform vec4 shallow_water : source_color = vec4(0.000000, 1.000000, 1.000000, 1.000000);
+uniform float murkiness = 0.30000001192093;
+uniform sampler2D depth_tex_frg_17 : hint_depth_texture;
+
+
+
+void vertex() {
+// Input:9
+	vec3 n_out9p0 = VERTEX;
+
+
+// Input:7
+	vec3 n_out7p0 = NORMAL;
+
+
+// Input:2
+	vec2 n_out2p0 = UV;
+
+
+	vec4 n_out3p0;
+// Texture2D:3
+	n_out3p0 = texture(simulation2, n_out2p0);
+	float n_out3p1 = n_out3p0.r;
+
+
+// FloatParameter:6
+	float n_out6p0 = amplitude;
+
+
+// FloatOp:5
+	float n_out5p0 = n_out3p1 * n_out6p0;
+
+
+// VectorOp:8
+	vec3 n_out8p0 = n_out7p0 * vec3(n_out5p0);
+
+
+// VectorOp:10
+	vec3 n_out10p0 = n_out9p0 + n_out8p0;
+
+
+// Output:0
+	VERTEX = n_out10p0;
+
+
+}
+
+void fragment() {
+// FloatParameter:9
+	float n_out9p0 = refraction_strength;
+
+
+	vec3 n_out8p0;
+// Expression:8
+	n_out8p0 = vec3(0.0, 0.0, 0.0);
+	{
+		vec3 duv = vec3(4.0 / 514.0, 4.0 / 514.0, 0);
+		float v1 = texture(simulation, UV - duv.xz).y;
+		float v2 = texture(simulation, UV + duv.xz).y;
+		float v3 = texture(simulation, UV - duv.zy).y;
+		float v4 = texture(simulation, UV + duv.zy).y;
+		
+		n_out8p0 = normalize(vec3(v1 - v2, v3 - v4, 0.3));
+	}
+
+
+// VectorOp:10
+	vec3 n_out10p0 = vec3(n_out9p0) * n_out8p0;
+
+
+// Input:12
+	vec2 n_out12p0 = SCREEN_UV;
+
+
+// VectorOp:11
+	vec3 n_out11p0 = n_out10p0 + vec3(n_out12p0, 0.0);
+
+
+	vec4 n_out13p0;
+// Texture2D:13
+	n_out13p0 = texture(screen_tex_frg_13, vec2(n_out11p0.xy));
+
+
+// ColorParameter:5
+	vec4 n_out5p0 = deep_water;
+
+
+// ColorParameter:6
+	vec4 n_out6p0 = shallow_water;
+
+
+// FloatParameter:3
+	float n_out3p0 = murkiness;
+
+
+	float n_out17p0;
+// LinearSceneDepth:17
+	{
+		float __log_depth = textureLod(depth_tex_frg_17, SCREEN_UV, 0.0).x;
+	vec4 __depth_view = INV_PROJECTION_MATRIX * vec4(vec3(SCREEN_UV, __log_depth) * 2.0 - 1.0, 1.0);
+		__depth_view.xyz /= __depth_view.w;
+		n_out17p0 = -__depth_view.z;
+	}
+
+
+	float n_out2p0;
+// Expression:2
+	n_out2p0 = 0.0;
+	{
+		float d = n_out17p0;
+		d = d + VERTEX.z;
+		n_out2p0 = exp(-d * n_out3p0);
+	}
+
+
+// Mix:7
+	vec3 n_out7p0 = mix(vec3(n_out5p0.xyz), vec3(n_out6p0.xyz), vec3(n_out2p0));
+
+
+// FloatConstant:15
+	float n_out15p0 = 0.800000;
+
+
+// Mix:14
+	vec3 n_out14p0 = mix(vec3(n_out13p0.xyz), n_out7p0, vec3(n_out15p0));
+
+
+// FloatFunc:4
+	float n_out4p0 = 1.0 - n_out2p0;
+
+
+// Output:0
+	ALBEDO = n_out14p0;
+	ALPHA = n_out4p0;
+	NORMAL = n_out8p0;
+
+
+}
+"
+graph_offset = Vector2(-804.577, -286.718)
+nodes/vertex/2/node = SubResource("VisualShaderNodeInput_a3j6j")
+nodes/vertex/2/position = Vector2(-1020, 220)
+nodes/vertex/3/node = SubResource("VisualShaderNodeTexture_55bo3")
+nodes/vertex/3/position = Vector2(-580, 240)
+nodes/vertex/4/node = SubResource("VisualShaderNodeTexture2DParameter_8el17")
+nodes/vertex/4/position = Vector2(-1020, 340)
+nodes/vertex/5/node = SubResource("VisualShaderNodeFloatOp_i3rvo")
+nodes/vertex/5/position = Vector2(-200, 400)
+nodes/vertex/6/node = SubResource("VisualShaderNodeFloatParameter_1iy6g")
+nodes/vertex/6/position = Vector2(-600, 500)
+nodes/vertex/7/node = SubResource("VisualShaderNodeInput_qqgs7")
+nodes/vertex/7/position = Vector2(-340, 260)
+nodes/vertex/8/node = SubResource("VisualShaderNodeVectorOp_rnr00")
+nodes/vertex/8/position = Vector2(0, 260)
+nodes/vertex/9/node = SubResource("VisualShaderNodeInput_3qti1")
+nodes/vertex/9/position = Vector2(-140, 120)
+nodes/vertex/10/node = SubResource("VisualShaderNodeVectorOp_isihq")
+nodes/vertex/10/position = Vector2(180, 160)
+nodes/vertex/connections = PackedInt32Array(2, 0, 3, 0, 4, 0, 3, 2, 3, 1, 5, 0, 6, 0, 5, 1, 7, 0, 8, 0, 5, 0, 8, 1, 9, 0, 10, 0, 8, 0, 10, 1, 10, 0, 0, 0)
+nodes/fragment/2/node = SubResource("VisualShaderNodeExpression_qqgs7")
+nodes/fragment/2/position = Vector2(-1240, 680)
+nodes/fragment/2/size = Vector2(512.6, 290.56)
+nodes/fragment/2/input_ports = "0,0,murkiness;1,0,linear_depth;"
+nodes/fragment/2/output_ports = "0,0,depth;"
+nodes/fragment/2/expression = "float d = linear_depth;
+d = d + VERTEX.z;
+depth = exp(-d * murkiness);"
+nodes/fragment/3/node = SubResource("VisualShaderNodeFloatParameter_rnr00")
+nodes/fragment/3/position = Vector2(-1520, 640)
+nodes/fragment/4/node = SubResource("VisualShaderNodeFloatFunc_3qti1")
+nodes/fragment/4/position = Vector2(-660, 720)
+nodes/fragment/5/node = SubResource("VisualShaderNodeColorParameter_i4qkf")
+nodes/fragment/5/position = Vector2(-1300, 200)
+nodes/fragment/6/node = SubResource("VisualShaderNodeColorParameter_mx35c")
+nodes/fragment/6/position = Vector2(-1300, 400)
+nodes/fragment/7/node = SubResource("VisualShaderNodeMix_krrqf")
+nodes/fragment/7/position = Vector2(-800, 360)
+nodes/fragment/8/node = SubResource("VisualShaderNodeExpression_w4dg5")
+nodes/fragment/8/position = Vector2(-1180, -180)
+nodes/fragment/8/size = Vector2(501.944, 279.904)
+nodes/fragment/8/input_ports = "0,8,sim;"
+nodes/fragment/8/output_ports = "0,4,normal;"
+nodes/fragment/8/expression = "vec3 duv = vec3(4.0 / 514.0, 4.0 / 514.0, 0);
+float v1 = texture(sim, UV - duv.xz).y;
+float v2 = texture(sim, UV + duv.xz).y;
+float v3 = texture(sim, UV - duv.zy).y;
+float v4 = texture(sim, UV + duv.zy).y;
+
+normal = normalize(vec3(v1 - v2, v3 - v4, 0.3));"
+nodes/fragment/9/node = SubResource("VisualShaderNodeFloatParameter_god7e")
+nodes/fragment/9/position = Vector2(-900, -460)
+nodes/fragment/10/node = SubResource("VisualShaderNodeVectorOp_8y2lh")
+nodes/fragment/10/position = Vector2(-520, -280)
+nodes/fragment/11/node = SubResource("VisualShaderNodeVectorOp_a7r7j")
+nodes/fragment/11/position = Vector2(-260, -280)
+nodes/fragment/12/node = SubResource("VisualShaderNodeInput_isihq")
+nodes/fragment/12/position = Vector2(-580, -100)
+nodes/fragment/13/node = SubResource("VisualShaderNodeTexture_a3j6j")
+nodes/fragment/13/position = Vector2(-80, -160)
+nodes/fragment/14/node = SubResource("VisualShaderNodeMix_55bo3")
+nodes/fragment/14/position = Vector2(-80, 80)
+nodes/fragment/15/node = SubResource("VisualShaderNodeFloatConstant_8el17")
+nodes/fragment/15/position = Vector2(-280, 60)
+nodes/fragment/16/node = SubResource("VisualShaderNodeTexture2DParameter_i3rvo")
+nodes/fragment/16/position = Vector2(-1580, -160)
+nodes/fragment/17/node = SubResource("VisualShaderNodeLinearSceneDepth_1iy6g")
+nodes/fragment/17/position = Vector2(-1440, 860)
+nodes/fragment/connections = PackedInt32Array(3, 0, 2, 0, 2, 0, 4, 0, 5, 0, 7, 0, 6, 0, 7, 1, 9, 0, 10, 0, 8, 0, 10, 1, 10, 0, 11, 0, 12, 0, 11, 1, 11, 0, 13, 0, 13, 0, 14, 0, 7, 0, 14, 1, 15, 0, 14, 2, 16, 0, 8, 0, 17, 0, 2, 1, 2, 0, 7, 2, 14, 0, 0, 0, 8, 0, 0, 8, 4, 0, 0, 1)

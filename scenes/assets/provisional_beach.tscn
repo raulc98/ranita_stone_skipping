@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://c73wnhrm4csai"]
+
+[ext_resource type="Shader" uid="uid://c5d8o5fqskgat" path="res://shaders/visual_shaders/sandShader.tres" id="1_sukv4"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sukv4"]
+render_priority = 0
+shader = ExtResource("1_sukv4")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_myqbq"]
+material = SubResource("ShaderMaterial_sukv4")
+
+[node name="provisional_beach" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(50, 0, 0, 0, 4, 0, 0, 0, 70, 0, 0, 0)
+instance_shader_parameters/ColorParameter = Color(0.789691, 0.575165, 0.287787, 1)
+mesh = SubResource("CylinderMesh_myqbq")

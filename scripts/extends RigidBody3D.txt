@@ -1,0 +1,153 @@
+extends RigidBody3D
+
+# ... tus variables existentes ...
+
+# AÑADE ESTAS VARIABLES NUEVAS
+@export var rotacion_al_lanzar: float = 8.0      # Velocidad base de rotación
+@export var rotacion_aleatoria: float = 4.0      # Variación aleatoria
+@export var perdida_rotacion_rebote: float = 0.7 # Cuánta rotación pierde al rebotar (0.7 = 70%)
+
+func stone_launcher_controller() -> void:
+	print("Is_first_launched: ", is_first_launched)
+	if is_first_launched:
+		if not is_power_selected:
+			is_power_selected = true
+			power_launch = power_launch * aim_ray.target_position.z
+			print("Final Power launch: ", power_launch)
+			return
+
+		freeze = false
+		is_first_launched = false
+		var dir: Vector3
+		if aim_ray:
+			var global_target: Vector3 = aim_ray.to_global(aim_ray.target_position)
+			dir = (global_target - global_transform.origin).normalized()
+		else: 
+			dir = -transform.basis.z.normalized()
+			
+		print("Final Power launchHHHHHH: ", power_launch)
+		var impulso: Vector3 = dir * power_launch + Vector3.UP * (power_launch * relative_up)
+		apply_central_impulse(impulso)
+		
+		# =====================================================
+		# 🎯 AÑADIR ROTACIÓN REALISTA
+		# =====================================================
+		# La piedra gira sobre varios ejes de forma aleatoria
+		randomize()
+		var velocidad_rot = rotacion_al_lanzar + randf_range(-rotacion_aleatoria, rotacion_aleatoria)
+		
+		# Rotación en los 3 ejes con diferentes intensidades
+		angular_velocity = Vector3(
+			randf_range(-velocidad_rot, velocidad_rot) * 0.5,  # Eje X (volteretas)
+			randf_range(-velocidad_rot, velocidad_rot) * 1.0,  # Eje Y (giro horizontal)
+			randf_range(-velocidad_rot, velocidad_rot) * 0.3   # Eje Z (inclinación)
+		)
+		
+		print("🌀 Velocidad angular: ", angular_velocity)
+		# =====================================================
+		
+		aim_ray.enabled = false
+		aim_ray.hide()
+		return
+	
+	if can_bounce && is_first_launched == false:
+		var v: Vector3 = linear_velocity
+		print("Velocidad actual:" , v.length())
+		if v.length() > min_bounce_speed:
+			intentional_bounce_stone()
+		can_bounce = false
+		return
+	elif not can_bounce:
+		if down_ray.target_position.z > 0.2:
+			down_ray.target_position.z -= 0.2
+		return
+
+func intentional_bounce_stone(contact_normal: Vector3 = Vector3.UP) -> void :
+	var v: Vector3 = linear_velocity * 1.2
+	var n: Vector3 = contact_normal.normalized()
+	var v_reflected: Vector3 = v - FLATNESS_FACTOR * v.dot(n) * n
+	
+	var new_velocity: Vector3 = v_reflected * (bounce_restitution)
+	if new_velocity.dot(n) < 0.1:
+		new_velocity += n * bounce_up_boost
+	print("new velocity: ", new_velocity)
+
+	linear_velocity = new_velocity
+	position += n * 0.05
+	
+	# =====================================================
+	# 🔄 AJUSTAR ROTACIÓN EN EL REBOTE
+	# =====================================================
+	# Al golpear el agua, la rotación cambia:
+	# 1. Pierde algo de energía (roce con el agua)
+	# 2. Se añade un poco de aleatoriedad (salpicadura)
+	
+	angular_velocity *= perdida_rotacion_rebote  # Pierde energía
+	
+	# Añadir un poco de rotación aleatoria por el impacto
+	angular_velocity += Vector3(
+		randf_range(-2.0, 2.0),
+		randf_range(-2.0, 2.0),
+		randf_range(-1.0, 1.0)
+	)
+	# =====================================================
+	
+	bounces_updated.emit()
+	spawn_bounce_effect(global_position, -n)
+
+func bounce_stone_with_water(contact_normal: Vector3 = Vector3.UP) -> void:
+	down_ray.target_position.z = 0
+	var v: Vector3 = linear_velocity
+	if v.length() < min_bounce_speed:
+		return
+	else:
+		bounces_updated.emit()
+		
+	var n: Vector3 = contact_normal.normalized()
+	var v_reflected: Vector3 = v - 2.0 * v.dot(n) * n
+	var new_velocity: Vector3 = v_reflected * bounce_restitution
+	if new_velocity.dot(n) < 0.1:
+		new_velocity += n * bounce_up_boost
+		
+	bounce_restitution -= 0.20
+	linear_velocity = new_velocity
+	position += n * 0.0
+	
+	# =====================================================
+	# 🔄 AJUSTAR ROTACIÓN EN REBOTE CON AGUA (mismo efecto)
+	# =====================================================
+	angular_velocity *= perdida_rotacion_rebote
+	angular_velocity += Vector3(
+		randf_range(-2.0, 2.0),
+		randf_range(-2.0, 2.0),
+		randf_range(-1.0, 1.0)
+	)
+	# =====================================================
+	
+	spawn_bounce_effect(global_position, -n)
+
+func reset_stone() -> void:
+	bounce_restitution = 1
+	Engine.time_scale = 1.1
+	last_time_scale = 1.1
+	power_launch = 20.0
+	is_power_selected = false
+	is_first_launched = true
+	
+	# Detener física (incluyendo rotación)
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO  # <-- IMPORTANTE: para que la piedra no siga girando al resetear
+	
+	sleeping = true
+	call_deferred("_apply_initial_transform")
+	
+	if aim_ray:
+		aim_ray.enabled = true
+		aim_ray.show()
+		
+	down_ray.target_position.z = 1
+	call_deferred("_restore_aim_ray_state")
+	freeze = true
+	_aim_phase = 0.0 
+	aim_ray.enabled = true
+	aim_ray.show()

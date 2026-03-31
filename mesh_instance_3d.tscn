@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://dli1kqc2off7w"]
+
+[ext_resource type="Shader" uid="uid://djwf5db6sr5us" path="res://nuevo_shader/water_paper.gdshader" id="1_aq2ne"]
+[ext_resource type="Script" uid="uid://n2g7r2mwhoen" path="res://nuevo_shader/WaterRippleController.gd" id="2_etjlb"]
+[ext_resource type="Texture2D" uid="uid://bdnfafdsco1u2" path="res://mesh_instance_3d.tres" id="2_gw35f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hbm4x"]
+render_priority = 0
+shader = ExtResource("1_aq2ne")
+shader_parameter/water_color = Color(0.55, 0.78, 0.85, 0.92)
+shader_parameter/paper_color = Color(0.96, 0.93, 0.87, 1)
+shader_parameter/ripple_ink_color = Color(0.18, 0.22, 0.35, 1)
+shader_parameter/noise_texture = ExtResource("2_gw35f")
+shader_parameter/ripple_noise = ExtResource("2_gw35f")
+shader_parameter/wave_speed = 0.6
+shader_parameter/wave_scale = 3.0
+shader_parameter/wave_strength = 0.04
+shader_parameter/paper_grain = 0.35
+shader_parameter/paper_scale = 6.0
+shader_parameter/ripple_pos = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_time = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_strength = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/ripple_speed = 1.8
+shader_parameter/ripple_duration = 2.5
+shader_parameter/ripple_thickness = 0.025
+shader_parameter/ripple_wobble = 0.18
+shader_parameter/ripple_count = 8
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cn1gj"]
+material = SubResource("ShaderMaterial_hbm4x")
+size = Vector2(20, 20)
+
+[node name="MeshInstance3D" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_cn1gj")
+script = ExtResource("2_etjlb")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.82762, 0.561289, 0, -0.561289, 0.82762, -0.123495, 0.778693, 1.35418)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.092805, 0.995684, 0, -0.995684, 0.092805, 0, 0.660988, 0.110981)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]

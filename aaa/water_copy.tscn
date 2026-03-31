@@ -1,0 +1,218 @@
+[gd_scene load_steps=27 format=3 uid="uid://bbx71oroj32rb"]
+
+[ext_resource type="Script" uid="uid://d1t2amlml1v2n" path="res://scripts/Water.gd" id="1_tuntb"]
+[ext_resource type="Shader" uid="uid://v3wvmylpqv6y" path="res://aaa/buffer.tres" id="2_au2u6"]
+[ext_resource type="Shader" uid="uid://br8x6xbnrq6k1" path="res://aaa/simulation.gdshader" id="3_fbr4b"]
+[ext_resource type="Shader" uid="uid://b34o6yhohosw3" path="res://shaders/visual_shaders/main.tres" id="4_8v3tr"]
+[ext_resource type="Material" uid="uid://d3ksaepuwwi2p" path="res://shaders/visual_shaders/main3.tres" id="5_sa5li"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ox6qd"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6vesp"]
+resource_local_to_scene = true
+shader = ExtResource("2_au2u6")
+shader_parameter/Texture2DParameter = SubResource("ViewportTexture_ox6qd")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_bqaq6"]
+viewport_path = NodePath("Collision")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sgqte"]
+viewport_path = NodePath("SimulationBuffer")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cg4ft"]
+resource_local_to_scene = true
+shader = ExtResource("3_fbr4b")
+shader_parameter/sim_tex = SubResource("ViewportTexture_sgqte")
+shader_parameter/col_tex = SubResource("ViewportTexture_bqaq6")
+shader_parameter/phase = 0.18
+shader_parameter/attenuation = 0.995
+shader_parameter/deltaUV = 2.3
+
+[sub_resource type="Environment" id="Environment_38vk1"]
+resource_local_to_scene = true
+background_mode = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_m1c3a"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ceg2r"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_28amn"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("4_8v3tr")
+shader_parameter/simulation2 = SubResource("ViewportTexture_ceg2r")
+shader_parameter/amplitude = 0.1
+shader_parameter/refraction_strength = 20.0
+shader_parameter/simulation = SubResource("ViewportTexture_m1c3a")
+shader_parameter/deep_water = Color(0.0470588, 0.643137, 0.647059, 1)
+shader_parameter/shallow_water = Color(0, 0.698039, 0.698039, 0.792157)
+shader_parameter/murkiness = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ntba4"]
+material = SubResource("ShaderMaterial_28amn")
+size = Vector2(100, 100)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bqaq6"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sgqte"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wsljw"]
+albedo_color = Color(0.878431, 0.635294, 0, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bqaq6"]
+material = SubResource("StandardMaterial3D_wsljw")
+size = Vector2(100, 100)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hyi7f"]
+material = ExtResource("5_sa5li")
+
+[sub_resource type="Animation" id="Animation_55jk1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.5, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_6tw82"]
+resource_name = "dip"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 1.5, 0), Vector3(0, -0.143525, 0), Vector3(0, 1.5, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oo1wg"]
+_data = {
+&"RESET": SubResource("Animation_55jk1"),
+&"dip": SubResource("Animation_6tw82")
+}
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7mycd"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+material = ExtResource("5_sa5li")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_28amn"]
+size = Vector3(1, 50, 100)
+
+[node name="Water" type="Node3D"]
+script = ExtResource("1_tuntb")
+
+[node name="SimulationBuffer" type="SubViewport" parent="."]
+size = Vector2i(514, 512)
+render_target_clear_mode = 2
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="SimulationBuffer"]
+material = SubResource("ShaderMaterial_6vesp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Simulation" type="SubViewport" parent="."]
+size = Vector2i(514, 512)
+render_target_clear_mode = 2
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="Simulation"]
+material = SubResource("ShaderMaterial_cg4ft")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Collision" type="SubViewport" parent="."]
+size = Vector2i(514, 512)
+render_target_update_mode = 4
+
+[node name="WaterCam" type="Camera3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -5, 0)
+keep_aspect = 0
+cull_mask = 524288
+environment = SubResource("Environment_38vk1")
+projection = 1
+current = true
+size = 100.0
+near = 0.001
+far = 5.0
+
+[node name="water_shader" type="MeshInstance3D" parent="." groups=["water"]]
+mesh = SubResource("PlaneMesh_ntba4")
+skeleton = NodePath("../water_area")
+
+[node name="water_area" type="Area3D" parent="." groups=["water"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="water_area" groups=["water"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.62883, 0)
+shape = SubResource("BoxShape3D_bqaq6")
+debug_color = Color(100, 100, 0, 1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." groups=["water_bottom"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.26491, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_sgqte")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+visible = false
+mesh = SubResource("PlaneMesh_bqaq6")
+
+[node name="Ball" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="WaterCollision" type="MeshInstance3D" parent="Ball"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.34387, -0.160632, -0.808869)
+layers = 524289
+mesh = SubResource("SphereMesh_hyi7f")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Ball"]
+libraries = {
+&"": SubResource("AnimationLibrary_oo1wg")
+}
+autoplay = "dip"
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05757, 1.831, 6.02832)
+physics_material_override = SubResource("PhysicsMaterial_7mycd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.4859, -1.48899, -6.72658)
+layers = 524289
+mesh = SubResource("BoxMesh_7mycd")
+
+[node name="water_move" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="water_move" groups=["water_final"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.0856, 0, 0)
+shape = SubResource("BoxShape3D_28amn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="water_move"]

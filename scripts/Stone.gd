@@ -5,10 +5,15 @@ signal bounces_updated
 
 @export var power_launch: float = 60.0
 @export var relative_up: float = 0.1         # fracción de la potencia hacia arriba para generar arco
-@onready var down_ray: RayCast3D = $down_ray
 @onready var stone_area: Area3D = $stone_area
 
+@onready var down_ray: RayCast3D = $down_ray # Raycast que colisiona contra el agua para enviar la señal de poder saltar.
 @onready var aim_ray: RayCast3D = $aim_ray   # asegúrate de tener este nodo en la escena
+@onready var back_ray: RayCast3D = $back_ray # controla y emite para controlar el agua...
+
+@export var rotacion_al_lanzar: float = 8.0      # Velocidad base de rotación
+@export var rotacion_aleatoria: float = 4.0      # Variación aleatoria
+@export var perdida_rotacion_rebote: float = 0.7 # Cuánta rotación pierde al rebotar (0.7 = 70%)
 
 #Longitud
 @export var aim_min_z: float = 1
@@ -38,7 +43,8 @@ var initial_aim_target: Vector3
 
 var last_time_scale: float = 1.1
 
-#	TODO: NUEVO, COMPROBAR...
+
+#PUNTUACION
 var distance_travelled: float = 0.0
 var _last_position: Vector3
 
@@ -128,9 +134,9 @@ func stone_launcher_controller() -> void:
 			intentional_bounce_stone()
 		can_bounce = false
 		return
-	elif not can_bounce:
-		if down_ray.target_position.z > 0.2:
-			down_ray.target_position.z -= 0.2
+	#elif not can_bounce:
+		#if down_ray.target_position.z > 0.2:
+			#down_ray.target_position.z -= 0.2
 		return
 
 #Recomandable que sea cercano a 2....
@@ -147,9 +153,13 @@ func intentional_bounce_stone(contact_normal: Vector3 = Vector3.UP) -> void :
 	if new_velocity.dot(n) < 0.1:
 		new_velocity += n * bounce_up_boost
 	print("new velocity: ", new_velocity)
+
 	linear_velocity = new_velocity
 	position += n * 0.05
 	bounces_updated.emit()
+	
+	# 🔥 ACTIVAR PARTÍCULAS EN LA POSICIÓN ACTUAL
+	spawn_bounce_effect(global_position, -n)
 	pass
   
 # Rebote al tocar el agua, ya no puedes pulsar...
@@ -176,7 +186,8 @@ func bounce_stone_with_water(contact_normal: Vector3 = Vector3.UP) -> void:
 	# 6) Fijar la nueva velocidad directamente
 	bounce_restitution -= 0.20
 	linear_velocity = new_velocity
-	position += n * 0.05
+	position += n * 0.0
+	spawn_bounce_effect(global_position, -n)
 
 #Reinicia la piedra
 func reset_stone() -> void:
@@ -232,3 +243,51 @@ func distance_travelled_counter() -> void:
 	else:
 		distance_travelled = 0
 	_last_position = current_pos
+
+func spawn_bounce_effect(spawn_position: Vector3, direction: Vector3) -> void:
+	print("🎪 USANDO ESCENA ORIGINAL pero forzando visibilidad")
+	
+	# Cargar tu escena
+	var effect_scene = preload("res://scenes/assets/waterparticles.tscn")
+	var container = effect_scene.instantiate()
+
+	# Posicionar frente a la cámara para asegurar visibilidad
+	var camera = get_viewport().get_camera_3d()
+	if camera:
+		var cam_pos = camera.global_position
+		var cam_forward = -camera.global_transform.basis.z
+		#container.global_position = cam_pos + cam_forward * 5.0
+		#container.global_position = cam_pos + (cam_forward * 5.0) + (camera.global_transform.basis.x * 2.0)
+		container.global_position = position + Vector3(0, 2, 0)
+	else:
+		container.global_position = spawn_position + Vector3(0, 4.0, 0)  # 2 metros arriba
+	
+	get_tree().root.add_child(container)
+	
+	# Activar y forzar configuración
+	for child in container.get_children():
+		if child is GPUParticles3D:
+			var particles = child as GPUParticles3D
+			
+			# FORZAR valores
+			#particles.amount = 100
+			#particles.lifetime = 20.0
+			particles.visible = true
+			
+			# Hacer material VISIBLE
+			if particles.draw_pass_1 and particles.draw_pass_1.material:
+				var mat = particles.draw_pass_1.material
+				#if mat is StandardMaterial3D:
+					#mat.emission_enabled = true
+			
+			# Activar
+			particles.emitting = true
+			particles.restart()
+			
+			print("✅ Activado: ", particles.name)
+	
+	# Debug: mostrar posición
+	print("📍 Posición de efectos: ", container.global_position)
+	
+	await get_tree().create_timer(3.0).timeout
+	container.queue_free()

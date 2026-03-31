@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://g58irlji0xdc"]
+
+[ext_resource type="Shader" uid="uid://bs0skxcncj1dc" path="res://scenes/ripples_water.gdshader" id="1_brnj7"]
+[ext_resource type="Shader" uid="uid://c7d7kiigmb7le" path="res://shaders/visual_shaders/ripples_water_vs.tres" id="2_rrnkm"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_brnj7"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrnkm"]
+resource_local_to_scene = true
+shader = ExtResource("1_brnj7")
+shader_parameter/sim_tex = SubResource("ViewportTexture_brnj7")
+shader_parameter/phase = 0.2
+shader_parameter/attenuation = 0.999
+shader_parameter/deltaUV = 3.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7jlde"]
+render_priority = 0
+shader = ExtResource("2_rrnkm")
+shader_parameter/amplitude = 0.5
+shader_parameter/refraction_strength = 0.1
+shader_parameter/deep_water = Color(0, 0, 1, 1)
+shader_parameter/shallow_water = Color(0, 1, 1, 1)
+shader_parameter/murkiness = 0.3
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_brnj7"]
+material = SubResource("ShaderMaterial_7jlde")
+size = Vector2(300, 300)
+
+[node name="ripples_water" type="Node3D"]
+
+[node name="Simulation" type="SubViewport" parent="."]
+size = Vector2i(514, 514)
+
+[node name="ColorRect" type="ColorRect" parent="Simulation"]
+material = SubResource("ShaderMaterial_rrnkm")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="water" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_brnj7")

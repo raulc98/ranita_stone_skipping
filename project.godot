@@ -15,6 +15,10 @@ run/main_scene="uid://bbgnf3sru2v4m"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SaveSystem="*res://scripts/save_system.gd"
+
 [display]
 
 window/size/viewport_width=720
@@ -26,6 +30,10 @@ window/stretch/aspect="keep_height"
 water=""
 water_bottom=""
 game_controller=""
+water_final=""
+stone_back_ray_cast=""
+water_1=""
+water_2=""
 
 [input]
 
@@ -52,6 +60,10 @@ reset={
 ]
 }
 
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [layer_names]
 
 3d_physics/layer_1="Default"
@@ -60,5 +72,7 @@ reset={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"
+renderer/rendering_method.web="mobile"
+anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/use_taa=true

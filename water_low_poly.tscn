@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dexg2rx8vpk4n"]
 
 [ext_resource type="Shader" uid="uid://cm0ffkqpc4xi5" path="res://water.tres" id="1_u6yqd"]
-[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/game/stone.tscn" id="2_uya2q"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/assets/stone.tscn" id="2_uya2q"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uya2q"]
 render_priority = 0

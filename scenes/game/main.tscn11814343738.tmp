@@ -1,0 +1,159 @@
+[gd_scene load_steps=9 format=3 uid="uid://djgygwun5y4sj"]
+
+[ext_resource type="Script" uid="uid://impy4g2i6kci" path="res://scripts/Camera3D.gd" id="1_llaio"]
+[ext_resource type="PackedScene" uid="uid://vekcc0073rqs" path="res://aaa/water.tscn" id="2_oekm8"]
+[ext_resource type="PackedScene" uid="uid://v62wbukrq7y4" path="res://scenes/assets/stone.tscn" id="3_yd8kv"]
+[ext_resource type="Script" uid="uid://da6ui83vjej7b" path="res://scripts/GameController.gd" id="4_uaf1y"]
+[ext_resource type="Script" uid="uid://brrohjg8mj15t" path="res://scripts/scripts_sin_uso/PlayButton.gd" id="5_iba00"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_oekm8"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_1qwgr"]
+sky_material = SubResource("ProceduralSkyMaterial_oekm8")
+
+[sub_resource type="Environment" id="Environment_yd8kv"]
+background_mode = 2
+sky = SubResource("Sky_1qwgr")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_yd8kv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.565943, -0.0415465, -0.823397, -0.635728, -0.613915, 0.46793, -0.524936, 0.788278, 0.321029, 0.557705, 1.93194, -0.965963)
+light_specular = 5.0
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -27.8595, 7.60302, -0.375187)
+size = 45.878
+script = ExtResource("1_llaio")
+
+[node name="Water_0" parent="." instance=ExtResource("2_oekm8")]
+
+[node name="Water_1" parent="." instance=ExtResource("2_oekm8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
+
+[node name="Water_2" parent="." instance=ExtResource("2_oekm8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 0)
+
+[node name="Water_3" parent="." instance=ExtResource("2_oekm8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, 0)
+
+[node name="GameController" type="Node" parent="." groups=["game_controller"]]
+script = ExtResource("4_uaf1y")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Overlay" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="UI/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.133333, 0.0784314, 0.94902, 0.192157)
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="UI/Overlay/CenterContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0.658824, 1)
+theme_override_font_sizes/font_size = 130
+text = "▶"
+icon_alignment = 1
+script = ExtResource("5_iba00")
+
+[node name="GameOverLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -85.0
+offset_top = 361.0
+offset_right = 87.0
+offset_bottom = 448.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+text = "GAME OVER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.5
+offset_top = 120.0
+offset_right = 51.5
+offset_bottom = 207.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MetersLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.5
+offset_top = 188.0
+offset_right = 51.5
+offset_bottom = 275.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RecordScoreLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -315.0
+offset_top = 56.0
+offset_right = -212.0
+offset_bottom = 143.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RecordMetersLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -314.0
+offset_top = 172.0
+offset_right = -211.0
+offset_bottom = 259.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stone" parent="." instance=ExtResource("3_yd8kv")]
+transform = Transform3D(-4.47338e-08, 0, -1.02339, 0, 1.02339, 0, 1.02339, 0, -4.47338e-08, -18.6516, 3.33417, 0)
+metadata/_edit_group_ = true

@@ -1,0 +1,78 @@
+[gd_scene load_steps=9 format=3 uid="uid://dcj11rl81v8os"]
+
+[sub_resource type="Curve" id="Curve_ns77n"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.468439, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_2jdtv"]
+width = 100
+curve = SubResource("Curve_ns77n")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g6ute"]
+particle_flag_align_y = true
+spread = 180.0
+initial_velocity_max = 12.0
+scale_min = 0.5
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_2jdtv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ns77n"]
+transparency = 1
+blend_mode = 1
+albedo_color = Color(0.129494, 0.365384, 0.999998, 1)
+metallic = 0.2
+metallic_specular = 0.0
+roughness = 0.16
+
+[sub_resource type="SphereMesh" id="SphereMesh_ns77n"]
+material = SubResource("StandardMaterial3D_ns77n")
+radius = 0.2
+height = 0.4
+radial_segments = 8
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ns77n"]
+particle_flag_align_y = true
+emission_shape_scale = Vector3(10, 1, 1)
+velocity_pivot = Vector3(0, 200, 0)
+direction = Vector3(1, 200, 0)
+spread = 180.0
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2jdtv"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_color = Color(0.426196, 0.70712, 1, 1)
+metallic = 0.54
+metallic_specular = 1.0
+roughness = 0.15
+emission_enabled = true
+emission = Color(0, 0.770276, 0.778835, 1)
+emission_energy_multiplier = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_2jdtv"]
+material = SubResource("StandardMaterial3D_2jdtv")
+radius = 0.05
+height = 0.1
+radial_segments = 10
+rings = 10
+is_hemisphere = true
+
+[node name="waterparticles" type="Node3D"]
+
+[node name="water1" type="GPUParticles3D" parent="." groups=["water_1"]]
+amount = 100
+lifetime = 4.04
+speed_scale = 2.66
+explosiveness = 0.64
+randomness = 0.42
+process_material = SubResource("ParticleProcessMaterial_g6ute")
+draw_pass_1 = SubResource("SphereMesh_ns77n")
+
+[node name="water2" type="GPUParticles3D" parent="." groups=["water_2"]]
+speed_scale = 4.86
+explosiveness = 0.19
+randomness = 0.55
+process_material = SubResource("ParticleProcessMaterial_ns77n")
+draw_pass_1 = SubResource("SphereMesh_2jdtv")
